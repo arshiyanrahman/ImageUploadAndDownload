@@ -1,0 +1,14 @@
+<div class="main">
+  <div class="upload-file">
+    <h2>Upload Image</h2><br>
+    <input type="file" (change)="onFileSelected($event)"><br>
+    <button class="btn btn-primary" (click)="onUpload()">Upload</button><br>
+  </div><br>
+  <hr><br>
+  <div class="download-file">
+    <h2>Download Image</h2><br>
+    <a [href]="url2" [download]="this.fileName">Download Link</a><br>
+    
+      <button class="btn btn-primary" (click)="onDownload()">Download</button>
+  </div>
+</div>
