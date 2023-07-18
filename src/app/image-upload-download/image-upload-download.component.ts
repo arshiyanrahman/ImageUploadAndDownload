@@ -8,29 +8,34 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ImageUploadDownloadComponent {
 
-  url= "http://localhost:8089/";
+  url = "http://localhost:8089/";
 
   selectedFile: File | null = null;
-  fileName: string | null ="";
-  constructor(private http: HttpClient) {}
+  fileName: string | null = "";
+    // dummy url
+    url2: string = "";
+
+  constructor(private http: HttpClient) { }
 
   onFileSelected(event: any) {
+    // event's file at 0th place to selectedFile
     this.selectedFile = event.target.files[0];
-    this.fileName=this.selectedFile?.name!;
-    console.log("in onFileSelected()");
+    // assigning selected file's name
+    this.fileName = this.selectedFile?.name!;
   }
 
   onUpload() {
     if (this.selectedFile) {
       const formData = new FormData();
-      console.log("in onUpload()");
+      // appending the selected file to formData
       formData.append('file', this.selectedFile);
 
-      this.http.post(this.url + "uploadimage", formData,{observe:'response',responseType:'text'})
-        .subscribe((response : any )=> {
-          if(response.status==200){
-          console.log('Image uploaded successfully.');
-            }  // Handle success
+      // calling post api method to upload this file to db 
+      this.http.post(this.url + "uploadimage", formData, { observe: 'response', responseType: 'text' })
+        .subscribe((response: any) => {
+          if (response.status == 200) {
+            console.log('Image uploaded successfully.');
+          }  // Handle success
         }, (error) => {
           console.error('Failed to upload the image.');
           // Handle error
@@ -38,25 +43,31 @@ export class ImageUploadDownloadComponent {
     }
   }
 
+  // method to download the image
   onDownload() {
-    const downloadUrl =this.url + "getImage/1";
-    this.http.get(downloadUrl,{responseType : 'blob'}).subscribe(resp =>{
+    const downloadUrl = this.url + "getImage/1";
+    // accessing the blob type of data from the url
+    this.http.get(downloadUrl, { responseType: 'blob' }).subscribe(resp => {
+      // passing blob type of data to handleFile()
       this.handleFile(resp);
       console.log("****", resp);
-      }, error =>{
-        console.log('Error downloading file:', error);
-      });
-}
+    }, error => {
+      console.log('Error downloading file:', error);
+    });
+  }
 
-url2 : string = "";
-private handleFile(file : Blob){
-  const blob = new Blob([file],{type :file.type});
-  this.url2 = window.URL.createObjectURL(blob);
 
-  const a =document.createElement('a');
+  // method to create download url
+  private handleFile(file: Blob) {
+    const blob = new Blob([file], { type: file.type });
 
-  a.click();
-}
+    //generating a link of the file to be downloaded
+    this.url2 = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.click();
+  }
 }
 
 
